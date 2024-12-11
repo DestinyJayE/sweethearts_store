@@ -1,8 +1,6 @@
 from fastapi import APIRouter
 
+from app.db import crud
+
 
 router = APIRouter()
-
-@router.get("/all")
-def get_all_goods():
-    return "hello"
