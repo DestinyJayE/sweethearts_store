@@ -1,7 +1,7 @@
 # db.crud.py
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from app.db.models import UserInDB
+from app.db.models import UserInDB,GoodsInDB
 
 
 async def get_user_by_id(session: AsyncSession, user_id: int):
@@ -15,3 +15,5 @@ async def create_user(session: AsyncSession, name: str, email: str, password: st
     await session.commit()
     await session.refresh(new_user)
     return new_user
+
+
