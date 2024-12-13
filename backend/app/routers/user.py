@@ -1,22 +1,33 @@
 # routers.user.py
+import pydantic
 from fastapi import APIRouter, Depends, HTTPException, Body
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.crud import create_user  # 导入 CRUD 方法
+from app.db import userCRUD  # 导入 CRUD 方法
 from app.db.session import get_db_session  # 导入 session 依赖
-from app.data import APIResult,User
+from app.data import APIResult, User
+from app.util import create_access_token
 
 router = APIRouter()
 
 
-# 添加用户接口
-@router.post("/add",response_model=APIResult[User])
-async def add_user(
+class UserLoginReq(BaseModel):
+    user_name: str = pydantic.Field(nullable=False, description="用户名")
+    password: str = pydantic.Field(nullable=False, description="密码")
+
+
+@router.post("/login", response_model=APIResult[dict])
+async def login(
         session: AsyncSession = Depends(get_db_session),
-        req:User = Body()
+        req: UserLoginReq = Body()
 ):
     try:
-        # 调用 CRUD 方法创建新用户
-        new_user = await create_user(session, req.name, req.email, req.password)
-        return APIResult.success(new_user)
+        user = await userCRUD.login(session, req.user_name, req.password)
+        if user is None:
+            return APIResult.error(code="429", msg="用户名或密码错误")
+        else:
+            user_dict = {"user_id": user.id}
+            token = create_access_token(user_dict)
+            return APIResult.success(data={"token": token})
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return APIResult.error(code="429", msg=str(e))
