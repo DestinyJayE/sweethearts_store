@@ -17,6 +17,6 @@ class APIResult(BaseModel, Generic[T]):
         return APIResult(code="200", msg=msg, data=data)
 
     @staticmethod
-    def error(code: str = "500", msg: str = "Error") -> "APIResult[None]":
+    def error(code: str = "500", msg: str = "Error") -> "APIResult[T]":
         """快速构造失败的返回值"""
         return APIResult(code=code, msg=msg, data=None)

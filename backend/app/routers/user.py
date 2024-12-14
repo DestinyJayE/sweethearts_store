@@ -1,19 +1,20 @@
 # routers.user.py
 import pydantic
-from fastapi import APIRouter, Depends, HTTPException, Body
+from fastapi import APIRouter, Depends, Body
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.data import APIResult
 from app.db import userCRUD  # 导入 CRUD 方法
 from app.db.session import get_db_session  # 导入 session 依赖
-from app.data import APIResult, User
 from app.util import create_access_token
 
 router = APIRouter()
 
 
 class UserLoginReq(BaseModel):
-    user_name: str = pydantic.Field(nullable=False, description="用户名")
-    password: str = pydantic.Field(nullable=False, description="密码")
+    user_name: str = pydantic.Field(title="用户名")
+    password: str = pydantic.Field(title="密码")
 
 
 @router.post("/login", response_model=APIResult[dict])

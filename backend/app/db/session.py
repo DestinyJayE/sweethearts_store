@@ -1,8 +1,8 @@
 # db.session.py
+from typing import AsyncGenerator
+
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-from typing import AsyncGenerator
-from fastapi import Depends
 
 DATABASE_URL = "mysql+aiomysql://root:123456@localhost:3306/sweethearts"  # 使用 aiomysql
 

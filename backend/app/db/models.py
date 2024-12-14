@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
+
 from .base import Base
 
 
@@ -52,7 +52,6 @@ class TaskInDB(Base):
     price = Column(Integer, nullable=False)
     des = Column(String(255), nullable=False)
     create_id = Column(Integer, nullable=False)
-    sweetheart_id = Column(Integer, nullable=False)
     is_finish = Column(Integer, default=0)
 
     def __repr__(self):

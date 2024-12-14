@@ -6,31 +6,31 @@ from app.db.models import TaskInDB
 from app.data import Task
 
 
-async def get_all_task(session: AsyncSession, page_size: int, page_number: int) -> list:
-    result = await session.execute(select(TaskInDB).limit(page_size).offset(page_number - 1))
-    return result.scalars().all()
+async def get_user_task(session: AsyncSession, user_id: int, page_size: int, page_number: int) -> list[Task]:
+    result = await session.execute(
+        select(TaskInDB).limit(page_size).offset(page_number - 1).where(TaskInDB.create_id == user_id))
+    tasks = result.scalars().all()
+    return [Task.from_orm(task) for task in tasks]
 
 
-async def add_task(session: AsyncSession, task: Task) -> TaskInDB:
+async def add_task(session: AsyncSession, task: Task) -> Task:
     task_dict = task.dict(exclude={'id'})
     new_task = TaskInDB(**task_dict)
     session.add(new_task)
-    await session.commit()
-    await session.refresh(new_task)
-    return new_task
+    await session.flush()
+    # await session.refresh(new_task)
+    return Task.from_orm(new_task)
 
 
-async def delete_task(session: AsyncSession, task_id: int) -> TaskInDB:
+async def delete_task(session: AsyncSession, task_id: int) -> Task:
     result = await session.execute(select(TaskInDB).where(TaskInDB.id == task_id))
     task = result.scalar_one()
     await session.delete(task)
-    await session.commit()
-    return task
+    return Task.from_orm(task)
 
 
-async def finish_task(session: AsyncSession, task_id: int) -> TaskInDB:
+async def finish_task(session: AsyncSession, task_id: int) -> Task:
     result = await session.execute(select(TaskInDB).where(TaskInDB.id == task_id))
     task = result.scalar_one()
     task.is_finished = 1
-    await session.commit()
-    return task
+    return Task.from_orm(task)

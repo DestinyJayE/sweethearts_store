@@ -37,7 +37,6 @@ create table task(
                      price varchar(255) not null,
                      des varchar(255) not null,
                      create_id int not null,
-                     sweetheart_id int not null,
                      is_finish int default 0
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务表';
 

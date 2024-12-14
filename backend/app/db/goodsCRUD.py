@@ -2,8 +2,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
+from app.data import Goods, BoughtGoods
 from app.db.models import GoodsInDB, GoodsUserInDB
-from app.data import Goods, GoodsUser, BoughtGoods
 
 
 # 获取某人创建的所有商品
@@ -23,8 +23,7 @@ async def add_goods(session: AsyncSession, goods: Goods) -> Goods:
     goods_dict = goods.dict(exclude={'id'})
     new_goods = GoodsInDB(**goods_dict)
     session.add(new_goods)
-    await session.commit()
-    await session.refresh(new_goods)
+    await session.flush()
     return Goods.from_orm(new_goods)
 
 
@@ -33,8 +32,7 @@ async def delete_goods(session: AsyncSession, goods_id: int) -> Goods:
     result = await session.execute(select(GoodsInDB).where(GoodsInDB.id == goods_id))
     goods = result.scalar_one()
     goods.is_deleted = 1
-    await session.commit()
-    await session.refresh(goods)
+    await session.flush()
     return Goods.from_orm(goods)
 
 
@@ -43,8 +41,7 @@ async def set_goods_num(session: AsyncSession, goods_id: int, num: int) -> Goods
     result = await session.execute(select(GoodsInDB).where(GoodsInDB.id == goods_id))
     goods = result.scalar_one()
     goods.num = num
-    await session.commit()
-    await session.refresh(goods)
+    await session.flush()
     return Goods.from_orm(goods)
 
 
