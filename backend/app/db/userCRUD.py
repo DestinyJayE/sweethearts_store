@@ -51,10 +51,11 @@ async def add_user_point(session: AsyncSession, user_id: int, point: int) -> Use
 
 
 async def login(session: AsyncSession, user_name: str, password: str) -> User | None:
-    result = await session.execute(
-        select(UserInDB).where(UserInDB.user_name == user_name, UserInDB.password == password))
-    user = result.scalar_one()
-    if user is None:
+    try:
+        result = await session.execute(
+            select(UserInDB).where(UserInDB.user_name == user_name, UserInDB.password == password))
+        user = result.scalar_one()
+    except Exception as e:
         return None
     else:
         return User.from_orm(user)

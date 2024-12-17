@@ -88,7 +88,8 @@ async def finish_task(
     try:
         async with session.begin():
             finished_task = await taskCRUD.finish_task(session, id)
-            await userCRUD.add_user_point(session, user_id=user_id, point=finished_task.price)
+            user = await userCRUD.get_user(session=session,user_id=user_id)
+            await userCRUD.add_user_point(session, user_id=user.sweetheart_id, point=finished_task.price)
         return APIResult.success(data=finished_task)
     except Exception as e:
         return APIResult[Task].error(msg=str(e))

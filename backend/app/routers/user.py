@@ -31,7 +31,7 @@ async def login(
             token = create_access_token(user_dict)
             return APIResult.success(data={"token": token})
     except Exception as e:
-        return APIResult.error(code="429", msg=str(e))
+        return APIResult.error(msg=str(e))
 
 
 @router.get("/point", response_model=APIResult[int])

@@ -10,6 +10,8 @@ app = FastAPI()
 
 origins = [
     "http://localhost:8081",
+    "http://192.168.137.1:8081",
+    "*",
 ]
 
 # 添加中间件
