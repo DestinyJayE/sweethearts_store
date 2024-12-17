@@ -16,11 +16,12 @@
         </div>
       </form>
     </div>
-  </template>
+</template>
   
-  <script>
-  import { UserAPI } from '@/api/user'
-  export default {
+<script>
+import { UserAPI } from '@/api/user'
+export default 
+{
     name: 'LoginPage',
     data() {
       return {
@@ -28,16 +29,38 @@
         password: ''
       };
     },
-    methods: {
-      submitForm() {
-        UserAPI
-      }
+    methods: 
+    {
+        submitForm() 
+        {
+            try 
+            {
+                const response = UserAPI.login({
+                username: this.username,
+                password: this.password
+                });
+                // 处理响应，例如保存token，跳转到主页等
+                console.log(response);
+                // 假设响应中包含token
+                if (response.token) 
+                    {
+                        // 保存token到localStorage或Vuex
+                        localStorage.setItem('token', response.token);
+                        // 跳转到主页或其他页面
+                        this.$router.push({ name: 'home' });
+                    }
+            } catch (error) 
+            {
+                // 处理错误，例如显示错误消息
+                console.error(error);
+            }
+        }
     }
-  };
-  </script>
+}
+</script>
   
-  <style scoped>
-  .login-container {
+ <style scoped>
+ .login-container {
     max-width: 300px;
     margin: 50px auto;
     padding: 20px;
