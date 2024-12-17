@@ -27,11 +27,9 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
 # 从 Token 中获取用户 ID
 def get_user_id_from_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
     token = credentials.credentials
-    print(token)
     try:
         # 解码 Token
-        payload = jwt.decode(token=token, key=SECRET_KEY, algorithms=[ALGORITHM])
-        print("Decoded payload:", payload)  # 添加这个打印语句
+        payload = jwt.decode(token=token, key=SECRET_KEY, algorithms=[ALGORITHM])# 添加这个打印语句
         user_id: int = payload.get("user_id")
         if user_id is None:
             raise HTTPException(

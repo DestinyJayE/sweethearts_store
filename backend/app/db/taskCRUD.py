@@ -32,5 +32,6 @@ async def delete_task(session: AsyncSession, task_id: int) -> Task:
 async def finish_task(session: AsyncSession, task_id: int) -> Task:
     result = await session.execute(select(TaskInDB).where(TaskInDB.id == task_id))
     task = result.scalar_one()
-    task.is_finished = 1
+    task.is_finish = 1
+    session.add(task)
     return Task.from_orm(task)
