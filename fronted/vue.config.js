@@ -4,7 +4,7 @@ module.exports = defineConfig({
 
   // 配置开发服务器
   devServer: {
-    port: 8080, // 自定义端口
+    port: 8081, // 自定义端口
     open: true // 启动时自动打开浏览器
   },
 

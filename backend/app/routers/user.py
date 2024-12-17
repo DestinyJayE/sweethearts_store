@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.data import APIResult
 from app.db import userCRUD  # 导入 CRUD 方法
 from app.db.session import get_db_session  # 导入 session 依赖
-from app.util import create_access_token
+from app.util import create_access_token, get_user_id_from_token
 
 router = APIRouter()
 
@@ -32,3 +32,28 @@ async def login(
             return APIResult.success(data={"token": token})
     except Exception as e:
         return APIResult.error(code="429", msg=str(e))
+
+
+@router.get("/point", response_model=APIResult[int])
+async def get_point(
+        session: AsyncSession = Depends(get_db_session),
+        user_id: int = Depends(get_user_id_from_token)
+) -> APIResult[int]:
+    try:
+        user = await userCRUD.get_user(session, user_id)
+        return APIResult.success(data=user.point)
+    except Exception as e:
+        return APIResult.error(msg=str(e))
+
+
+@router.get("/sweetheart_point", response_model=APIResult[int])
+async def get_sweetheart_point(
+        session: AsyncSession = Depends(get_db_session),
+        user_id: int = Depends(get_user_id_from_token)
+) -> APIResult[int]:
+    try:
+        user = await userCRUD.get_user(session, user_id)
+        sweetheart = await userCRUD.get_user(session, user.sweetheart_id)
+        return APIResult.success(data=sweetheart.point)
+    except Exception as e:
+        return APIResult.error(msg=str(e))

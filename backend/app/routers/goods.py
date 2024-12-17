@@ -130,3 +130,17 @@ async def get_bought_goods(
         return APIResult.success(data=bought_list)
     except Exception as e:
         return APIResult.error(msg=str(e))
+
+
+@router.post("/use_goods", response_model=APIResult[str])
+async def use_goods(
+        id: int,
+        user_id: int = Depends(get_user_id_from_token),
+        session: AsyncSession = Depends(get_db_session)
+) -> APIResult[str]:
+    try:
+        async with session.begin():
+            await goodsUserCRUD.delete_user_goods(session, user_id=user_id, id=id)
+        return APIResult.success(msg="使用成功")
+    except Exception as e:
+        return APIResult.error(msg=str(e))

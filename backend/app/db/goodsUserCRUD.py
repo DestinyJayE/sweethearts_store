@@ -18,3 +18,18 @@ async def add_goods_user(session: AsyncSession, user_id: int, goods_id: int) -> 
         goods_user_in_db.user_purchased_quantity += 1
         await session.flush()
         return GoodsUser.from_orm(goods_user_in_db)
+
+
+async def delete_user_goods(session: AsyncSession, user_id: int, id: int) -> None:
+    result = await session.execute(
+        select(GoodsUserInDB).where(GoodsUserInDB.owner_id == user_id, GoodsUserInDB.goods_id == id))
+    goods_user_in_db = result.scalar_one_or_none()
+    if goods_user_in_db.user_purchased_quantity > 1:
+        goods_user_in_db.user_purchased_quantity -= 1
+        session.add(goods_user_in_db)
+        await session.flush()
+        return
+    else:
+        await session.delete(goods_user_in_db)
+        await session.flush()
+        return
