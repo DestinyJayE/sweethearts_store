@@ -1,7 +1,8 @@
+<!-- App.vue -->
 <template>
   <div id="app">
     <!-- 侧边栏 -->
-    <SidebarMenu />
+    <SidebarMenu v-if = "showSidebar"/>
 
     <!-- 动态渲染的页面内容 -->
     <div class="content">
@@ -10,15 +11,16 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 import SidebarMenu from './components/SidebarMenu.vue';
 
-export default {
-  name: 'App',
-  components: {
-    SidebarMenu,
-  },
-};
+const route = useRoute();
+
+const showSidebar = computed(() => {
+  return route.meta?.showSidebar !== false;
+});
 </script>
 
 <style>
