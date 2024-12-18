@@ -13,7 +13,6 @@
     <table v-if="isMyTask" border="1" style="width: 100%; text-align: center;">
       <thead>
       <tr>
-        <th>ID</th>
         <th>名称</th>
         <th>价格</th>
         <th>描述</th>
@@ -23,7 +22,6 @@
       </thead>
       <tbody>
       <tr v-for="task in tasks" :key="task.id">
-        <td>{{ task.id }}</td>
         <td>{{ task.name }}</td>
         <td>{{ task.price }}</td>
         <td>{{ task.des }}</td>
@@ -201,7 +199,7 @@ onMounted(() => {
 /* 页面整体样式 */
 .task-list {
   font-family: 'Arial', sans-serif;
-  background-color: #fff5f7; /* 浅粉色背景 */
+  background-color: #fff; /* 浅粉色背景 */
   padding: 20px;
   max-width: 900px;
   margin: 20px auto;
@@ -284,9 +282,12 @@ th,
 td {
   padding: 10px;
   text-align: center;
+  min-width: 100px; /* 单元格最小宽度 */
+  max-width: 200px; /* 单元格最大宽度 */
+  word-wrap: break-word; /* 允许长单词换行 */
+  padding: 10px; /* 单元格内边距 */
   border: 1px solid #f2f2f2;
 }
-
 
 /* 模态框样式 */
 .modal {

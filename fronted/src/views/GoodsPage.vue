@@ -14,7 +14,6 @@
     <table v-if="isMyGoods" border="1" style="width: 100%; text-align: center;">
       <thead>
       <tr>
-        <th>ID</th>
         <th>名称</th>
         <th>价格</th>
         <th>描述</th>
@@ -24,7 +23,6 @@
       </thead>
       <tbody>
       <tr v-for="goods in goodsList" :key="goods.id">
-        <td>{{ goods.id }}</td>
         <td>{{ goods.name }}</td>
         <td>{{ goods.price }}</td>
         <td>{{ goods.des }}</td>
@@ -219,6 +217,7 @@ onMounted(() => {
   min-height: 100vh; /* 确保至少占据整个视口高度 */
   background-color: #fff5f7; /* 浅粉色背景，营造温馨氛围 */
   padding: 20px;
+  border-radius: 10px;
 }
 
 /* 商品列表主体 */
@@ -284,8 +283,8 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
-  background-color: #fff;
-  border-radius: 8px;
+  background-color: white;
+  border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -299,6 +298,10 @@ th,
 td {
   padding: 10px;
   text-align: center;
+  min-width: 100px; /* 单元格最小宽度 */
+  max-width: 200px; /* 单元格最大宽度 */
+  word-wrap: break-word; /* 允许长单词换行 */
+  padding: 10px; /* 单元格内边距 */
   border: 1px solid #f2f2f2;
 }
 

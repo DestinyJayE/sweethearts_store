@@ -1,42 +1,42 @@
 <template>
-  <div class="home-list">
-    <h1>我购买的商品</h1>
-    <div class="user-balance">
-      <span>余额：{{ userBalance }} </span>
-    </div>
-    <table border="1" style="width: 100%; text-align: center;">
-      <thead>
-      <tr>
-        <th>ID</th>
-        <th>名称</th>
-        <th>价格</th>
-        <th>描述</th>
-        <th>库存</th>
-        <th>操作</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="goods in goodsList" :key="goods.id">
-        <td>{{ goods.id }}</td>
-        <td>{{ goods.name }}</td>
-        <td>{{ goods.price }}</td>
-        <td>{{ goods.des }}</td>
-        <td>{{ goods.user_purchased_quantity }}</td>
-        <td>
-          <button @click="confirmUseGoods(goods)">使用</button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+  <div class="home-list-container">
+    <div class="home-list">
+      <h1>我购买的商品</h1>
+      <div class="user-balance">
+        <span>余额：{{ userBalance }} </span>
+      </div>
+      <table border="1" style="width: 100%; text-align: center;">
+        <thead>
+        <tr>
+          <th>名称</th>
+          <th>价格</th>
+          <th>描述</th>
+          <th>库存</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="goods in goodsList" :key="goods.id">
+          <td>{{ goods.name }}</td>
+          <td>{{ goods.price }}</td>
+          <td>{{ goods.des }}</td>
+          <td>{{ goods.user_purchased_quantity }}</td>
+          <td>
+            <button @click="confirmUseGoods(goods)">使用</button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
 
-    <!-- Modal for confirmation -->
-    <div v-if="showModal" class="modal">
-      <div class="modal-content">
-        <h2>确认使用商品</h2>
-        <p>您确定要使用 {{ selectedGoods.name }} 吗？</p>
-        <div class="modal-actions">
-          <button @click="useGoods(selectedGoods.id)">确认</button>
-          <button @click="showModal = false">取消</button>
+      <!-- Modal for confirmation -->
+      <div v-if="showModal" class="modal">
+        <div class="modal-content">
+          <h2>确认使用商品</h2>
+          <p>您确定要使用 {{ selectedGoods.name }} 吗？</p>
+          <div class="modal-actions">
+            <button @click="useGoods(selectedGoods.id)">确认</button>
+            <button @click="showModal = false">取消</button>
+          </div>
         </div>
       </div>
     </div>
@@ -84,11 +84,22 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.home-list {
-  font-family: 'Arial', sans-serif;
-  background-color: #fff5f7; /* 浅粉色背景 */
+.home-list-container{
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: flex-start; /* 顶部对齐 */
+  min-height: 100vh; /* 确保至少占据整个视口高度 */
+  background-color: #fff5f7;/* 浅粉色背景，营造温馨氛围 */
   padding: 20px;
-  max-width: 900px;
+  border-radius: 10px;
+}
+
+.home-list {
+  width: 100%;
+  font-family: 'Arial', sans-serif;
+  background-color: #fff; /* 浅粉色背景 */
+  padding: 20px;
+  max-width: 1980px;
   margin: 20px auto;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -152,6 +163,10 @@ th,
 td {
   padding: 10px;
   text-align: center;
+  min-width: 100px; /* 单元格最小宽度 */
+  max-width: 200px; /* 单元格最大宽度 */
+  word-wrap: break-word; /* 允许长单词换行 */
+  padding: 10px; /* 单元格内边距 */
   border: 1px solid #f2f2f2;
 }
 
