@@ -2,8 +2,9 @@
 /**
  * 请求路径前缀
  */
-export const BASE_URL = 'http://localhost:8080'
+export const BASE_URL = 'http://39.105.220.129:8080'
 
+// export const BASE_URL = 'http://localhost:8080'
 /**
  * 用户模块
  */
