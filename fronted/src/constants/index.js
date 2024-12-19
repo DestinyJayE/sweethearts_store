@@ -2,7 +2,7 @@
 /**
  * 请求路径前缀
  */
-export const BASE_URL = 'http://39.105.220.129:8080'
+export const BASE_URL = 'https://store.sweethearts.ip-ddns.com:443'
 
 // export const BASE_URL = 'http://localhost:8080'
 /**
