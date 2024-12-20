@@ -21,12 +21,13 @@ service.interceptors.response.use(
         const { code, data, msg } = response.data;
         console.log(code)
         if (code === '200') {
-            return data;
+            return response.data;
         }else if(code === '429'){
             ElMessage.error(msg);
-            return
+            return response.data
         } 
         ElMessage.error(msg || '请求失败');
+        return data
     },
     error => {
         if (error.config) {

@@ -4,7 +4,7 @@
     <!-- 右上角余额显示 -->
     <h1>商品列表</h1>
     <div class="user-balance">
-      <span>余额：{{ userBalance }} </span>
+      <span>积分：{{ userBalance }} </span>
     </div>
     <div class="button-container">
     <button @click="toggleGoodsView">{{ isMyGoods ? '我发布的商品' : 'TA发布的商品' }}</button>
@@ -28,7 +28,14 @@
         <td>{{ goods.des }}</td>
         <td>{{ goods.num }}</td>
         <td>
+          <div class="table-button-container">
+          <div class="button-item">             
+              <button @click="showDetails(goods)"> 详情 </button>
+            </div>
+            <div class="button-item">  
           <button @click="deleteGoods(goods.id)">删除</button>
+            </div>
+          </div>
         </td>
       </tr>
       </tbody>
@@ -38,7 +45,6 @@
     <table v-else border="1" style="width: 100%; text-align: center;">
       <thead>
       <tr>
-        <th>ID</th>
         <th>名称</th>
         <th>价格</th>
         <th>描述</th>
@@ -48,15 +54,21 @@
       </thead>
       <tbody>
       <tr v-for="goods in sweetheartGoodsList" :key="goods.id">
-        <td>{{ goods.id }}</td>
         <td>{{ goods.name }}</td>
         <td>{{ goods.price }}</td>
         <td>{{ goods.des }}</td>
         <td>{{ goods.num }}</td>
         <td>
-          <button @click="buyGoods(goods.id)" :disabled="goods.num === 0">
+          <div class="table-button-container">
+            <div class="button-item">             
+              <button @click="showDetails(goods)"> 详情 </button>
+            </div>
+            <div class="button-item">
+              <button @click="buyGoods(goods.id)" :disabled="goods.num === 0">
             {{ goods.num === 0 ? '已售罄' : '购买' }}
-          </button>
+              </button>  
+            </div>
+          </div>
         </td>
       </tr>
       </tbody>
@@ -96,6 +108,31 @@
         <button @click="closeFeedbackModal">确定</button>
       </div>
     </div>
+    <div v-if="showDetailsModal" class="modal">
+        <div class="modal-content">
+          <h2>商品详情</h2>
+          <form>
+            <div
+              v-for="key in Object.keys(fieldMap)"
+              :key="key"
+              class="form-group"
+            >
+              <label :for="fieldMap[key]">{{ fieldMap[key] }}:</label>
+              <div class="detail-text">
+                <textarea
+                  :id="fieldMap[key]"
+                  readonly
+                  v-model="selectedGoods[key]"
+                  class="text-input"
+                ></textarea>
+              </div>
+            </div>
+          </form>
+          <div class="modal-actions">
+            <button @click="showDetailsModal = false">关闭</button>
+          </div>
+        </div>
+      </div>
   </div>
   </div>
 </template>
@@ -112,6 +149,17 @@ let showAddGoodsModal = ref(false); // 控制显示添加商品的模态框
 let showFeedbackModal = ref(false); // 控制显示购买反馈的模态框
 let feedbackMessage = ref(""); // 购买反馈信息
 let userBalance = ref(0); // 用户余额
+let selectedGoods = ref({}); // 当前选中的商品对象
+let showDetailsModal = ref(false); // 控制 "详情" 模态框的显示
+
+const fieldMap = {
+  name: "商品名称",
+  price: "商品价格",
+  des: "商品描述",
+  num: "库存"
+};
+
+
 let newGoods = ref({
   name: "",
   price: 0,
@@ -119,24 +167,27 @@ let newGoods = ref({
   num: 0
 });
 
-
+function showDetails(goods) {
+  selectedGoods.value = goods; // 使用 .value 修改 ref 的值
+  showDetailsModal.value = true; // 打开详情模态框
+}
 
 // 获取商品数据
 function refreshGoodsList() {
   GoodsAPI.getSelfGoods().then(res => {
-    goodsList.value = res;
+    goodsList.value = res.data;
   });
 }
 function refreshSweetheartGoodsList() {
   GoodsAPI.getSweetheartGoods().then(res => {
-    sweetheartGoodsList.value = res;
+    sweetheartGoodsList.value = res.data;
   });
 }
 
 // 获取用户余额
 function refreshUserBalance() {
   UserAPI.getPoint().then(res => {
-    userBalance.value = res; // 假设接口返回格式为 { data: 余额 }
+    userBalance.value = res.data; // 假设接口返回格式为 { data: 余额 }
   });
 }
 
@@ -155,8 +206,8 @@ function deleteGoods(id) {
 
 // 购买商品
 function buyGoods(id) {
-  GoodsAPI.buyGoods(id).then(() => {
-    feedbackMessage.value = "购买成功！"; // 设置成功反馈信息
+  GoodsAPI.buyGoods(id).then((res) => {
+    feedbackMessage.value = res.msg; // 设置成功反馈信息
     showFeedbackModal.value = true; // 打开反馈模态框
     refreshSweetheartGoodsList(); // 刷新商品列表
     refreshUserBalance(); // 刷新余额
@@ -250,7 +301,17 @@ h1 {
   color: #ff6b81;
 }
 
-.button-container {
+.table-button-container {
+  display: flex; /* 使用flex布局使子元素水平排列 */
+  justify-content: space-around; /* 平均分布子元素 */
+}
+
+.button-item {
+  /* 每个按钮的容器样式 */
+  margin: 0 5px; /* 添加一些外边距 */
+}
+
+.button-container{
   display: flex;
   justify-content: space-between; /* 将按钮分散对齐，左边一个，右边一个 */
   align-items: center; /* 可选：垂直居中对齐 */
@@ -303,6 +364,9 @@ td {
   word-wrap: break-word; /* 允许长单词换行 */
   padding: 10px; /* 单元格内边距 */
   border: 1px solid #f2f2f2;
+  overflow: hidden; /* 确保内容不会溢出单元格 */
+  white-space: nowrap; /* 防止内容换行 */
+  text-overflow: ellipsis; /* 当内容超出时显示省略号 */
 }
 
 tbody tr:nth-child(odd) {
@@ -315,6 +379,13 @@ tbody tr:nth-child(even) {
 
 tbody tr:hover {
   background-color: #ffe6eb; /* 鼠标悬停时的高亮 */
+}
+
+.text-input{
+  max-width: 300px; /* 设置最大宽度 */
+  word-wrap: break-word; /* 允许长单词换行 */
+  white-space: normal; /* 允许文本换行 */
+  overflow-wrap: break-word; /* 允许在长单词或URL内部进行换行 */
 }
 
 /* 添加任务模态框 */

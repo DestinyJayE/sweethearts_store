@@ -42,7 +42,7 @@ async function handleLogin() {
   UserAPI
       .login(params)
       .then((response) => {
-        const { token } = response;
+        const { token } = response.data;
         localStorage.setItem('token', token);
         localStorage.setItem('user_name', LoginData.value.user_name);
         router.push({ path: "/home", params: { user_name: LoginData.value.user_name } });

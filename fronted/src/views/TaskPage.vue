@@ -3,7 +3,7 @@
   <div class="task-list">
     <h1>任务列表</h1>
     <div class="user-balance">
-      <span>余额：{{ userBalance }} </span>
+      <span>积分：{{ userBalance }} </span>
     </div>
     <div class="button-container">
     <button @click="toggleTaskView">{{ isMyTask ? '我创建的任务' : 'TA创建的任务' }}</button>
@@ -29,10 +29,13 @@
         <td>
           <div class="table-button-container">
               <div class="button-item">
-                <button @click="deleteTask(task.id)">删除</button>
+                  <button @click="showDetails(task)">详情</button>
               </div>
               <div class="button-item">
                 <button @click="completeTask(task.id)" :disabled="task.is_finish !== 0">完成</button>
+              </div>
+              <div class="button-item">
+                <button @click="deleteTask(task.id)">删除</button>
               </div>
           </div>
         </td>
@@ -44,20 +47,24 @@
     <table v-else border="1" style="width: 100%; text-align: center;">
       <thead>
       <tr>
-        <th>ID</th>
         <th>名称</th>
         <th>价格</th>
         <th>描述</th>
         <th>状态</th>
+        <th>操作</th>
       </tr>
       </thead>
       <tbody>
       <tr v-for="task in sweetheartTasks" :key="task.id">
-        <td>{{ task.id }}</td>
         <td>{{ task.name }}</td>
         <td>{{ task.price }}</td>
         <td>{{ task.des }}</td>
         <td>{{ task.is_finish === 0 ? '未完成' : '已完成' }}</td>
+        <td>
+          <div class="button-item">
+            <button @click="showDetails(task)">详情</button>
+          </div>
+        </td>
       </tr>
       </tbody>
     </table>
@@ -84,6 +91,33 @@
         </div>
       </div>
     </div>
+
+    <div v-if="showDetailsModal" class="modal">
+        <div class="modal-content">
+          <h2>任务详情</h2>
+          <form>
+            <div
+              v-for="key in Object.keys(fieldMap)"
+              :key="key"
+              class="form-group"
+            >
+              <label :for="fieldMap[key]">{{ fieldMap[key] }}:</label>
+              <div class="detail-text">
+                <textarea
+                  :id="fieldMap[key]"
+                  readonly
+                  v-model="selectedTask[key]"
+                  class="text-input"
+                ></textarea>
+              </div>
+            </div>
+          </form>
+          <div class="modal-actions">
+            <button @click="showDetailsModal = false">关闭</button>
+          </div>
+        </div>
+      </div>
+
   </div>
   </div>
 </template>
@@ -100,22 +134,35 @@ let tasks = ref([]); // 我的任务
 let sweetheartTasks = ref([]); // TA的任务
 let isMyTask = ref(true); // 当前是否展示“我的任务”
 let showAddTaskModal = ref(false); // 控制显示添加任务的模态框
-let userBalance = ref(0); // 用户余额
+let userBalance = ref(0); // 
+let selectedTask = ref({}); // 当前选中的商品对象
+let showDetailsModal = ref(false);
 let newTask = ref({
   name: "",
   price: 0,
   des: ""
 });
 
+const fieldMap = {
+  name: "任务名称",
+  price: "任务积分",
+  des: "任务描述",
+};
+
+function showDetails(task) {
+  selectedTask.value = task; // 使用 .value 修改 ref 的值
+  showDetailsModal.value = true; // 打开详情模态框
+}
+
 // 获取任务数据
 function refreshTask() {
   TaskAPI.getSelfTasks().then(res => {
-    tasks.value = res;
+    tasks.value = res.data;
   });
 }
 function refreshSweetheartTask() {
   TaskAPI.getSweetheartTask().then(res => {
-    sweetheartTasks.value = res;
+    sweetheartTasks.value = res.data;
   });
 }
 
@@ -159,7 +206,7 @@ function submitTask() {
 
 function getPoint(){
   UserAPI.getPoint().then((resp)=>{
-    userBalance.value = resp;
+    userBalance.value = resp.data;
   })
 }
 
