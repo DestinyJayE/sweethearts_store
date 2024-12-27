@@ -2,17 +2,19 @@
 
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
-
 from .routers import router_goods
 from .routers import router_user
 from .routers import router_task
+import asyncio
 app = FastAPI()
+
 
 origins = [
     "http://localhost:8081",
     "http://192.168.137.1:8081",
     "*",
 ]
+
 
 # 添加中间件
 app.add_middleware(

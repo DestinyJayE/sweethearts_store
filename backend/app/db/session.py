@@ -1,13 +1,15 @@
 # db.session.py
 from typing import AsyncGenerator
-
+from sqlalchemy.sql import text
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
+import asyncio
 
-DATABASE_URL = "mysql+aiomysql://root:123456@localhost:3306/sweethearts"  # 使用 aiomysql
+DATABASE_URL = "mysql+aiomysql://root:Sweetheart.@localhost:3306/sweethearts"  # 使用 aiomysql
 
 # 创建引擎
-engine = create_async_engine(DATABASE_URL, echo=True, future=True)
+engine = create_async_engine(DATABASE_URL, echo=False, pool_pre_ping=True, future=True)
+
 
 # 创建 session 工厂
 async_session = sessionmaker(

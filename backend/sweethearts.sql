@@ -41,3 +41,5 @@ create table task(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务表';
 
 
+insert into user value(1,'test','123','123',0,2);
+insert into user value(2,'test_2','123','123',0,1);

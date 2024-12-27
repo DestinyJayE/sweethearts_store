@@ -57,3 +57,17 @@ async def get_sweetheart_point(
         return APIResult.success(data=sweetheart.point)
     except Exception as e:
         return APIResult.error(msg=str(e))
+
+
+@router.post("/update_password",response_model=APIResult[str])
+async def update_password(
+    new_password: str,
+    session: AsyncSession = Depends(get_db_session),
+    user_id: int = Depends(get_user_id_from_token)
+) -> APIResult[str]:
+    try:
+        async with session.begin():
+            user = await userCRUD.update_password(session, user_id, new_password)
+        return APIResult.success(data="success")
+    except Exception as e:
+        return APIResult.error(msg=str(e))

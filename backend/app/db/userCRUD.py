@@ -56,6 +56,14 @@ async def login(session: AsyncSession, user_name: str, password: str) -> User | 
             select(UserInDB).where(UserInDB.user_name == user_name, UserInDB.password == password))
         user = result.scalar_one()
     except Exception as e:
+        print(str(e))
         return None
     else:
         return User.from_orm(user)
+
+
+async def update_password(session: AsyncSession, user_id: int, new_password: str) -> User:
+    result = await session.execute(select(UserInDB).where(UserInDB.id == user_id))
+    user = result.scalar_one()
+    user.password = new_password
+    return User.from_orm(user)
