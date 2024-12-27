@@ -34,4 +34,13 @@ const showSidebar = computed(() => {
   flex: 1;
   padding: 20px;
 }
+
+.el-message {
+  position: fixed !important; /* 固定在屏幕上 */
+  top: 20px !important; /* 距离顶部 20px */
+  left: 50% !important; /* 水平居中 */
+  transform: translateX(-50%) scale(0.5); /* 居中调整 */
+  z-index: 9999 !important; /* 确保它在最上层 */
+  
+}
 </style>
