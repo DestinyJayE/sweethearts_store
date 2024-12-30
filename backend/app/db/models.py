@@ -56,3 +56,12 @@ class TaskInDB(Base):
 
     def __repr__(self):
         return f"<Task(id={self.id}, name={self.name}, price={self.price})>"
+
+
+class VerificationCodeInDB(Base):
+    __tablename__ = "verification_codes"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    email = Column(String(255), index=True, nullable=False)
+    code = Column(String(10), nullable=False)
+    expire_time = Column(Integer, nullable=False)

@@ -41,5 +41,13 @@ create table task(
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='任务表';
 
 
+drop table if exists verification_codes;
+create table verification_codes(
+                    id int primary key auto_increment,
+                    email varchar(255) not null,
+                    code varchar(10) not null,
+                    expire_time bigint not null
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='验证码表';
+
 insert into user value(1,'test','123','123',0,2);
 insert into user value(2,'test_2','123','123',0,1);

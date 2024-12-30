@@ -71,3 +71,28 @@ async def update_password(
         return APIResult.success(data="success")
     except Exception as e:
         return APIResult.error(msg=str(e))
+
+
+
+@router.post("/get_code", response_model=APIResult[str])
+async def generate_code(
+    email:str,
+    session: AsyncSession = Depends(get_db_session)
+):
+    '''
+    生成注册使用验证码，使用email发送
+    '''
+    pass
+
+
+class RegisterReq(BaseModel):
+    pass
+
+@router.post("/register", response_model=APIResult[str])
+async def register(
+    req: RegisterReq = Body(),
+    session: AsyncSession = Depends(get_db_session)
+) -> APIResult[str]:
+    '''
+    验证验证码，并且完成用户注册
+    '''
