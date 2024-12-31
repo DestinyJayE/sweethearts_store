@@ -4,6 +4,7 @@ from .goods import Goods
 from .task import Task
 from .goodsUser import GoodsUser
 from .boughtGoods import BoughtGoods
+from .verificationCode import VerificationCode
 __all__ = [
     'APIResult',
     'User',
@@ -11,4 +12,5 @@ __all__ = [
     'Task',
     'GoodsUser',
     'BoughtGoods',
+    'VerificationCode',
 ]
